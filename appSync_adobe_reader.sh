@@ -1,7 +1,7 @@
 #!/bin/bash
 
 AGENT="Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0"
-URL="http://get.adobe.com/reader/webservices/json/standalone/?platform_type=Windows&platform_dist=Windows%207&platform_arch=&language=English&eventname=readerotherversions HTTP/1.1"
+#URL="http://get.adobe.com/reader/webservices/json/standalone/?platform_type=Windows&platform_dist=Windows%207&platform_arch=&language=English&eventname=readerotherversions"
 REFERER="http://get.adobe.com/reader/enterprise/"
 COOKIE="READER_HTTPREFERER=; READER_NEW_USER=true;"
 
