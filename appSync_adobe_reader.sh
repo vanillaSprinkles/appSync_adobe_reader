@@ -1,9 +1,22 @@
 #!/bin/bash
 
+
+DESTINATION_PATH="/tmp/adobe/reader"
+
+mkdir -p ${DESTINATION_PATH}
+if ! [ -d ${DESTINATION_PATH} ] && ! [ -w ${DESTINATION_PATH} ]; then
+    echo "cannot write to ${DESTIONATION_PATH}; premature exit"
+    exit
+fi
+
+echo "yay"
+exit
+
 AGENT="Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0"
 #URL="http://get.adobe.com/reader/webservices/json/standalone/?platform_type=Windows&platform_dist=Windows%207&platform_arch=&language=English&eventname=readerotherversions"
 REFERER="http://get.adobe.com/reader/enterprise/"
 COOKIE="READER_HTTPREFERER=; READER_NEW_USER=true;"
+
 
 DLFILE=adobe_urls.grepme
 
@@ -75,7 +88,7 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
 # sha1
 # URL
     mkdir -p new_files
-    echo -e "${file}\r\n${URL}"  >  "new_files/${OS}_${bVer}.txt"
+    echo -e "${file} ${URL}"  >  "new_files/${OS}_${bVer}.txt"
 	
 #    verT=${URL//*reader/}
 #    ver
