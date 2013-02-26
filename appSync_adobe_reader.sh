@@ -1,4 +1,7 @@
 #!/bin/bash
+## used to auto-download the newest Adobe Reader updates for network installation
+## updates available at https://github.com/vanillaSprinkles/appSync_adobe_reader
+
 
 ## software repo dir
 repo="_srepo"
