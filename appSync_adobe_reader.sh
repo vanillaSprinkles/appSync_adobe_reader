@@ -103,14 +103,14 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
     # [0] inst-name
     # [1] file-url
     # [2] sha1
-    
+
+    fileExists=0
     if [[ $sz_rFl == 0 ]]; then
 	wget --quiet -q  ${URL} -O "${TWDIR}/${file}"  2>/dev/null
 	openssl dgst -sha1 "${TWDIR}/${file}" | cut -d' ' -f2 >> "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt"
 	mkdir -p "${TWDIR}/${repoChk}"
 	mv "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt" "${TWDIR}/${repoChk}/."
     else
-	fileExists=0
 	## for every file in Repo-Check, check if it matches file-to-download
 	for (( i=0; i < sz_rFl*3; i=i+3 )); do
 #	    echo " ${file}  == ${rFl[${i}]}"
@@ -131,9 +131,9 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
 		mkdir -p ${repo}/older/${repoChk}
 		olVerInst=($(cut -d' ' -f1 ${repo}/${repoChk}/${OS}_${bVer}.txt ))
 #		olVerChk=$(cut -d' ' -f3 ${repo}/${repoChk}/${OS}_${bVer}.txt )
-		#_# move out older checksum to old-folder, concatenate any others with same name such that oldest is on top
+		#_# move out older checksum to old-folder, concatenate any others with same name such that NEWEST is on top
 		touch "${repo}/older/${repoChk}/${OS}_${bVer}.txt"
-		mv "${repo}/${repoChk}/${OS}_${bVer}.txt" "${repo}/older/${repoChk}/${OS}_${bVer}.txtB"
+		mv "${repo}/${repoChk}/${OS}_${bVer}.txtB" "${repo}/older/${repoChk}/${OS}_${bVer}.txt"
 		cat "${repo}/older/${repoChk}/${OS}_${bVer}.txt" "${repo}/older/${repoChk}/${OS}_${bVer}.txtB" > "${repo}/older/${repoChk}/${OS}_${bVer}.txtC"
 		mv "${repo}/older/${repoChk}/${OS}_${bVer}.txtC"  "${repo}/older/${repoChk}/${OS}_${bVer}.txt" -f
 		rm -f "${repo}/older/${repoChk}/${OS}_${bVer}.txtB"  "${repo}/older/${repoChk}/${OS}_${bVer}.txtC"
@@ -143,73 +143,16 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
 	fi
 
     fi
-    #_# move in new installer and new checksum
-    mkdir -p "${repo}/${repoChk}"
-    mv "${TWDIR}/${file}" "${repo}"/.
-    mv "${TWDIR}/${repoChk}"/*  "${repo}/${repoChk}"/.
+    
+    if [[ $fileExists == 0 ]]; then
+        #_# move in new installer and new checksum
+	mkdir -p "${repo}/${repoChk}"
+	mv "${TWDIR}/${file}" "${repo}"/.
+	mv "${TWDIR}/${repoChk}"/*  "${repo}/${repoChk}"/.
+    fi
 
-
-#    verT=${URL//*reader/}
-#    ver
-#    wget ${URL}
-done
-
-exit
-
-
-## more brainstorms and ideas 
-
-#rm -rf ${TWDIR}
-
-# MD5 digest
-#openssl dgst -md5 filename
-# SHA1 digest
-#openssl dgst -sha1 filename | cut -d' ' -f2
-
-
-exit
-nFl=($(find ${TWDIR}/${n_chk_f} -maxdepth 1 -type f -exec cat {} \;  2>/dev/null))
-szt=${#nFl[@]}
-sz_nFl=$(( szt / 2 ))
-
-rFl=($(find ${repo}/${repoChk}  -maxdepth 1 -type f -exec cat {} \;  2>/dev/null))
-szt=${#rFl[@]}
-sz_rFl=$(( szt / 3 ))
-
-
-if [ $sz_nFl > $sz_rFl ]; then
-    for (( i=0; $i < $sz_nFl; i++ )); do
-	echo no
-    done
-fi
-
-exit
-
-if [ $sz_nFl > $sz_rFl ]; then
-    for nF in ${nFl[@]}; do
-	for rF in ${rF1[@]}; do
-	    echo no
-	done
-    done
-else
-    for rF in ${rFl[@]}; do
-	for nF in ${nFl[@]}; do
-	    echo no
-	done
-    done
-fi
-
-exit
-for nF in $(find ${TWDIR}/${n_chk_f} -maxdepth 1 -type f); do
-    for rF in $(find ${repo} -maxdepth 1 -type f); do
-	#if [[ "${URL}" == ]]; then
-	#fi
-	echo ${FILE}
-    done
 done
 
 
-## for new-folder, compare files in Repo folder, if mismatch download new, move in
-### 
-
+rm -rf ${TWDIR}
 
