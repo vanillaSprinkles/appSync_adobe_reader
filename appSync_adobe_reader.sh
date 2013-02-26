@@ -105,9 +105,10 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
     # [2] sha1
     
     if [[ $sz_rFl == 0 ]]; then
-	echo "wget ${file}    ${URL}  "
-#	wget --quiet -q  ${URL} -O "${TWDIR}/${file}"  2>/dev/null
-#	openssl dgst -sha1 "${TWDIR}/${file}" 
+	wget --quiet -q  ${URL} -O "${TWDIR}/${file}"  2>/dev/null
+	openssl dgst -sha1 "${TWDIR}/${file}" | cut -d' ' -f2 >> "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt"
+	mkdir -p "${TWDIR}/${repoChk}"
+	mv "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt" "${TWDIR}/${repoChk}/."
     else
 	fileExists=0
 	## for every file in Repo-Check, check if it matches file-to-download
@@ -139,18 +140,22 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
 		#_# move out old installer to old-folder
 		mv "${repo}/${olVerInst}" "${repo}/older/."
 	    fi
-	    #_# move in new installer and new checksum
-	    mv "${TWDIR}/${file}" "${repo}/."
-	    mv "${TWDIR}/${repoChk}"/* "${repo}/${repoChk}/." -f
 	fi
 
     fi
+    #_# move in new installer and new checksum
+    mkdir -p "${repo}/${repoChk}"
+    mv "${TWDIR}/${file}" "${repo}"/.
+    mv "${TWDIR}/${repoChk}"/*  "${repo}/${repoChk}"/.
+
+
 #    verT=${URL//*reader/}
 #    ver
 #    wget ${URL}
 done
 
 exit
+
 
 ## more brainstorms and ideas 
 
