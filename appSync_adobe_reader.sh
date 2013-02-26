@@ -110,7 +110,8 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
     fileExists=0
     if [[ $sz_rFl == 0 ]]; then
 	wget --quiet -q  ${URL} -O "${TWDIR}/${file}"  2>/dev/null
-	openssl dgst -sha1 "${TWDIR}/${file}" | cut -d' ' -f2 >> "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt"
+	sha1=$(openssl dgst -sha1 "${TWDIR}/${file}" | cut -d' ' -f2)
+	echo -n " ${sha1}" >> "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt"
 	mkdir -p "${TWDIR}/${repoChk}"
 	mv "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt" "${TWDIR}/${repoChk}/."
     else
@@ -125,7 +126,8 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
 	# download file, generate sha1 digest
 	if [[ $fileExists == 0 ]]; then
 	    wget --quiet -q  ${URL} -O "${TWDIR}/${file}"  2>/dev/null
-	    openssl dgst -sha1 "${TWDIR}/${file}" | cut -d' ' -f2 >> "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt"
+	    sha1=$(openssl dgst -sha1 "${TWDIR}/${file}" | cut -d' ' -f2)
+	    echo -n " ${sha1}" >> "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt"
 	    mkdir -p "${TWDIR}/${repoChk}"
 	    mv "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt" "${TWDIR}/${repoChk}/."
 	    
