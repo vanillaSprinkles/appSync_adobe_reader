@@ -9,6 +9,16 @@ repo="_srepo"
 # optional # repo-checksum sub-folder name
 repoChk="checksums"
 
+email_on_new=1
+email_who="admin@localhost"
+#  ctime="$(datime ns)"   ## https://github.com/vanillaSprinkles/rc/tree/master/HOME/.bscripts
+  ctime="$(date '+%Y.%m.%d_%H.%M.%S')"
+  em_sub_prefix="appSync: adobe reader: "
+  # em_sub_custom= ( 0 | "<custom text>" )
+  em_sub_custom=0
+  em_bdy_prefix="appSync_adobe_reader "
+  # em_bdy_custom= ( 0 | "<custom text>" )
+  em_bdy_custom=0
 
 
 # Working Directory
@@ -61,6 +71,25 @@ URL+=("http://get.adobe.com/reader/webservices/json/standalone/?platform_type=Ma
 URL+=("http://get.adobe.com/reader/webservices/json/standalone/?platform_type=Macintosh&platform_dist=OSX&platform_arch=x86-32&platform_misc=10.6.3&language=English&eventname=readerotherversions")
 
 DEBUG=0
+
+
+function send_email() {
+    file="${1}"
+    SUB="${em_sub_prefix} ${em_sub_custom}"
+    [[ $em_sub_custom == 0 ]] && SUB="${em_sub_prefix} ${file}"
+    BDY="${em_bdy_prefix} \n${em_bdy_custom}"
+#    [[ $em_bdy_custom == 0 ]] && BDY="${em_bdy_prefix} \n${ctime} \n${file} \n${repo//\/\\} \n${2}"
+    [[ $em_bdy_custom == 0 ]] && BDY="${em_bdy_prefix} \n${ctime} \n\n${file} \n$(echo "${repo}" | sed 's/\//\\\\/g')\\\\${file} \n\n${2}"
+
+    echo -e "${BDY}" > "${TWDIR}/em_msg.txt"
+
+    /bin/mail -s "$SUB" "$email_who" < "${TWDIR}/em_msg.txt"
+}
+
+#send_email "file.exe" "url://yatas.asd.as/?sad=asde2"
+#exit
+
+
 rm -f  ${TWDIR}/adobe_Murls  ${TWDIR}/adobe_Wurls  2>&1 1>/dev/null
 for vURL in ${URL[@]}; do
   rm -f ${DLFILE}
@@ -114,6 +143,7 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
 	echo -n " ${sha1}" >> "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt"
 	mkdir -p "${TWDIR}/${repoChk}"
 	mv "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt" "${TWDIR}/${repoChk}/."
+	send_email ${file} ${URL}
     else
 	## for every file in Repo-Check, check if it matches file-to-download
 	for (( i=0; i < sz_rFl*3; i=i+3 )); do
@@ -154,6 +184,7 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
 	mkdir -p "${repo}/${repoChk}"
 	mv "${TWDIR}/${file}" "${repo}"/.
 	mv "${TWDIR}/${repoChk}"/*  "${repo}/${repoChk}"/.
+	send_email ${file} ${URL}
     fi
 
 done
