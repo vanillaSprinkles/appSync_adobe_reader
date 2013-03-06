@@ -115,8 +115,8 @@ fi
 rm -f  ${TWDIR}/adobe_Murls  ${TWDIR}/adobe_Wurls  2>&1 1>/dev/null
 
 
-rFl=($(find ${repo}/${repoChk}  -maxdepth 1 -type f -exec cat {} \;  2>/dev/null))
-szt=${#rFl[@]}
+rFl=($(find "${repo}/${repoChk}"  -maxdepth 1 -type f -exec cat {} \;  2>/dev/null))
+szt="${#rFl[@]}"
 sz_rFl=$(( szt / 3 ))
 
 for URL in ${Wurls[@]} ${Murls[@]}; do
@@ -162,13 +162,14 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
 	    mv "${TWDIR}/${n_chk_f}/${OS}_${bVer}.txt" "${TWDIR}/${repoChk}/."
 	    
 	    # if old Ver checksum file exists
-	    if [[ -e  ${repo}/${repoChk}/${OS}_${bVer}.txt ]]; then
-		mkdir -p ${repo}/older/${repoChk}
-		olVerInst=($(cut -d' ' -f1 ${repo}/${repoChk}/${OS}_${bVer}.txt ))
+	    if [[ -e  "${repo}/${repoChk}/${OS}_${bVer}.txt" ]]; then
+		mkdir -p "${repo}/older/${repoChk}"
+		olVerInst=($(cut -d' ' -f1 "${repo}/${repoChk}/${OS}_${bVer}.txt" ))
 #		olVerChk=$(cut -d' ' -f3 ${repo}/${repoChk}/${OS}_${bVer}.txt )
 		#_# move out older checksum to old-folder, concatenate any others with same name such that NEWEST is on top
+### this might have some logic errors - needs review
 		touch "${repo}/older/${repoChk}/${OS}_${bVer}.txt"
-		mv "${repo}/${repoChk}/${OS}_${bVer}.txtB" "${repo}/older/${repoChk}/${OS}_${bVer}.txt"
+		mv "${repo}/${repoChk}/${OS}_${bVer}.txt" "${repo}/older/${repoChk}/${OS}_${bVer}.txtB"
 		cat "${repo}/older/${repoChk}/${OS}_${bVer}.txt" "${repo}/older/${repoChk}/${OS}_${bVer}.txtB" > "${repo}/older/${repoChk}/${OS}_${bVer}.txtC"
 		mv "${repo}/older/${repoChk}/${OS}_${bVer}.txtC"  "${repo}/older/${repoChk}/${OS}_${bVer}.txt" -f
 		rm -f "${repo}/older/${repoChk}/${OS}_${bVer}.txtB"  "${repo}/older/${repoChk}/${OS}_${bVer}.txtC"
