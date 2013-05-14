@@ -164,7 +164,8 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
 	    # if old Ver checksum file exists
 	    if [[ -e  "${repo}/${repoChk}/${OS}_${bVer}.txt" ]]; then
 		mkdir -p "${repo}/older/${repoChk}"
-		olVerInst=($(cut -d' ' -f1 "${repo}/${repoChk}/${OS}_${bVer}.txt" ))
+#		olVerInst=($(cut -d' ' -f1 "${repo}/${repoChk}/${OS}_${bVer}.txt" ))
+		olVerInst=($(cut -d'/' -f11 "${repo}/${repoChk}/${OS}_${bVer}.txt" ))
 #		olVerChk=$(cut -d' ' -f3 ${repo}/${repoChk}/${OS}_${bVer}.txt )
 		#_# move out older checksum to old-folder, concatenate any others with same name such that NEWEST is on top
 ### this might have some logic errors - needs review
@@ -174,7 +175,7 @@ for URL in ${Wurls[@]} ${Murls[@]}; do
 		mv "${repo}/older/${repoChk}/${OS}_${bVer}.txtC"  "${repo}/older/${repoChk}/${OS}_${bVer}.txt" -f
 		rm -f "${repo}/older/${repoChk}/${OS}_${bVer}.txtB"  "${repo}/older/${repoChk}/${OS}_${bVer}.txtC"
 		#_# move out old installer to old-folder
-		mv "${repo}/${olVerInst}" "${repo}/older/."
+		mv "${repo}/${olVerInst[0]}" "${repo}/older/."
 	    fi
 	fi
 
